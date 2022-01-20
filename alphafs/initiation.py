@@ -1,6 +1,6 @@
 import os
 
-from alphafs.config import DATA_DIR, FINANCIAL_FS_DB, FS_DB, OLD_DATA_DIR, OPERATION_DIR
+from alphafs.config import DATA_DIR, FS_DB, OLD_DATA_DIR, OPERATION_DIR
 from alphafs.exceptions import FileDoesnotExist
 from alphafs.log import main_logger
 from alphafs.messages import (
@@ -29,7 +29,5 @@ def check_init_structure():
 
     operation_dir_components = os.listdir(DATA_DIR)
     if FS_DB not in operation_dir_components:
-        main_logger.warning(f"{DATA_DOES_NOT_EXIST_MESSAGE}: {FS_DB}")
-    if FINANCIAL_FS_DB not in operation_dir_components:
-        main_logger.warning(f"{DATA_DOES_NOT_EXIST_MESSAGE}: {FINANCIAL_FS_DB}")
+        main_logger.warning(f"{DATA_DOES_NOT_EXIST_MESSAGE}: {FS_DB}.db")
         raise FileDoesnotExist("No data file")
