@@ -8,11 +8,11 @@ from alphafs.messages import LOADING, PROCESS_DONE
 REQUIRED_FIELDS = ["rcept_no", "corp_code", "sj_div", "account_id", "account_nm"]
 
 
-class DataReader:
+class DataBaseReader:
     def __init__(self):
         self.data_path = f"{DATA_DIR}/{OPERATION_DIR}/{FS_DB}.db"
 
-    def read_data(self):
+    def read_database(self) -> pd.DataFrame:
         engine = sa.create_engine(f"sqlite:///{self.data_path}")
         df = pd.read_sql(f"SELECT * FROM {FS_DB}", engine)
         return df
@@ -20,11 +20,15 @@ class DataReader:
 
 class DataProvider:
     def __init__(self):
-        datareader = DataReader()
-        main_logger.info(LOADING)
-        self.data = datareader.read_data()
-        main_logger.info(PROCESS_DONE)
+        self.datareader = DataBaseReader()
 
-    def fetch_data(self):
-        data = self.data[REQUIRED_FIELDS]
+    def load_data(self) -> pd.DataFrame:
+        main_logger.info(LOADING)
+        df = self.datareader.read_database()
+        main_logger.info(PROCESS_DONE)
+        return df
+
+    def fetch_data(self) -> pd.DataFrame:
+        df = self.load_data()
+        data = df[REQUIRED_FIELDS]
         return data
