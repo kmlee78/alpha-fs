@@ -6,7 +6,7 @@ class BreakException(Exception):
         return self._message
 
 
-class FileDoesnotExist(Exception):
+class FileDoesNotExist(Exception):
     def __init__(self, message):
         self._message = message
 

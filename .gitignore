@@ -1,6 +1,7 @@
 # Addition
 temp/
 raw_data/
+indicators/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
