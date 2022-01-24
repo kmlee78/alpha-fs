@@ -42,8 +42,8 @@ def check_data_dir_structure():
         setup_data_dir_structure()
         main_logger.info(PROCESS_DONE)
 
-    operation_dir_components = os.listdir(DATA_DIR)
-    if FS_DB not in operation_dir_components:
+    operation_dir_components = os.listdir(f"{DATA_DIR}/{OPERATION_DIR}")
+    if f"{FS_DB}.db" not in operation_dir_components:
         main_logger.warning(f"{DATA_DOES_NOT_EXIST_MESSAGE}: {FS_DB}.db")
         raise FileDoesNotExist("No data file")
 

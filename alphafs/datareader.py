@@ -7,7 +7,6 @@ from alphafs.config import (
     CORP_CODE,
     DATA_DIR,
     FS_DB,
-    IS,
     OPERATION_DIR,
     RECEPT_NO,
     SCE,
@@ -34,7 +33,8 @@ def _load_data() -> pd.DataFrame:
 
 def _process_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df[REQUIRED_FIELDS]
-    df = df[(df[SJ_DIV] != SCE) & (df[SJ_DIV] != IS)]
+    df = df[df[SJ_DIV] != SCE]
+    df[SJ_DIV] = df[SJ_DIV].str.replace("^I", "CI")
     return df
 
 
