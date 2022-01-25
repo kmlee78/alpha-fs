@@ -25,3 +25,9 @@ CF = "CF"
 
 # account_id
 NULL = "-표준계정코드 미사용-"
+
+# indicators
+MAIN = "main"
+SYNONYM_ID = "synonym_id"
+SYNONYM_NM = "synonym_nm"
+COUNTS = "counts"
