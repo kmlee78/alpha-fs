@@ -119,7 +119,9 @@ class IndicatorCreator:
             indicators[account_id][MAIN] = synonyms[0]
             indicators[account_id][SYNONYM_ID] = list()
             indicators[account_id][SYNONYM_NM] = list()
-            indicators[account_id][COUNTS] = self.df_frequency[COUNTS].to_list()[0]
+            indicators[account_id][COUNTS] = self.df_frequency[
+                self.df_frequency[ACCOUNT_ID] == account_id
+            ][COUNTS].to_list()[0]
         return indicators
 
     def store_indicator(self, sj_div: str):
