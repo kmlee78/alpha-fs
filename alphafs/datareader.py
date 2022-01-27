@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 import sqlalchemy as sa
 
@@ -44,3 +46,20 @@ def fetch_data() -> pd.DataFrame:
     data = _process_data(df)
     main_logger.info(PROCESS_DONE)
     return data
+
+
+class IndicatorReader:
+    def __init__(self, path):
+        self.path = path
+
+    def read_indicator(self):
+        with open(self.path, "r") as id_json:
+            indicator = json.load(id_json)
+        return indicator
+
+    def show_status(self, indent=4):
+        indicator = self.read_indicator()
+        indicator_viewer = json.dumps(
+            indicator, indent=indent, sort_keys=False, ensure_ascii=False
+        )
+        print(indicator_viewer)
