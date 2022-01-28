@@ -9,6 +9,7 @@ from alphafs.config import (
 
 PROCESS_DONE = "Process completed"
 LOADING = "The process will take some time. Please wait..."
+QUIT_PROCESS = "Type 'q' if you want to quit the job or go back to previous stage"
 
 DATA_DIR_ERROR_MESSAGE = f"""
 Data directory structure is not standarized.

@@ -18,11 +18,11 @@ from alphafs.messages import (
     INDICATORS_DIR_ERROR_MESSAGE,
     PROCESS_DONE,
 )
-from alphafs.process import confirm_continuity
+from alphafs.system import confirm_continuity
 
 
 def setup_data_dir_structure():
-    os.mkdir * TEMP
+    os.mkdir(TEMP)
     os.mkdir(DATA_DIR)
     os.mkdir(f"{DATA_DIR}/{OPERATION_DIR}")
     os.mkdir(f"{DATA_DIR}/{OLD_DATA_DIR}")

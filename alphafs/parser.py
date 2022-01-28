@@ -7,6 +7,7 @@ from alphafs.config import (
     ACCOUNT_ID,
     ACCOUNT_NM,
     COUNTS,
+    ESSENTIAL_LIST,
     INDICATORS_DIR,
     LATEST_INDICATOR,
     MAIN,
@@ -20,7 +21,7 @@ from alphafs.config import (
 
 
 def get_essential_account_nm(
-    df_original: pd.DataFrame, df: pd.DataFrame, percentage: int = 5
+    df_original: pd.DataFrame, df: pd.DataFrame, percentage: int = 1
 ) -> List[str]:
     """
     Parameter 'df_original' is the originally fetched data, whereas 'df' is
@@ -108,9 +109,12 @@ class IndicatorCreator:
     def __init__(self, df_frequency: pd.DataFrame):
         self.df_frequency = df_frequency
 
-    def create_indicator(self) -> Dict:
+    def create_indicator(self, essential_list: List[str]) -> Dict:
         account_ids = self.df_frequency[ACCOUNT_ID].unique()
-        indicators: Dict[str, Dict[str, Union[str, List[str], int]]] = dict()
+        indicators: Dict[
+            str, Union[List[str], Dict[str, Union[str, List[str], int]]]
+        ] = dict()
+        indicators[ESSENTIAL_LIST] = essential_list
         for account_id in account_ids:
             indicators[account_id] = dict()
             synonyms = self.df_frequency[self.df_frequency[ACCOUNT_ID] == account_id][
@@ -124,8 +128,8 @@ class IndicatorCreator:
             ][COUNTS].to_list()[0]
         return indicators
 
-    def store_indicator(self, sj_div: str):
-        indicators = self.create_indicator()
+    def store_indicator(self, sj_div: str, essential_list: List[str]):
+        indicators = self.create_indicator(essential_list)
         with open(
             f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{sj_div}.json", "w"
         ) as json_file:
