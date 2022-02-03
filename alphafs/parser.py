@@ -8,6 +8,7 @@ from alphafs.config import (
     ACCOUNT_NM,
     COUNTS,
     ESSENTIAL_LIST,
+    FREQUENCY_FILE,
     INDICATORS_DIR,
     LATEST_INDICATOR,
     MAIN,
@@ -78,7 +79,7 @@ class FrequencyParser:
         target_counts = (
             self.df[dependency + [target]].groupby(dependency)[target].value_counts()
         )
-        df = self._convert_by_caching(target_counts, "id_cache.csv")
+        df = self._convert_by_caching(target_counts, FREQUENCY_FILE)
         df = df.rename(columns={f"{target}.1": COUNTS})
         return df
 

@@ -8,6 +8,7 @@ LATEST_INDICATOR = "latest"
 
 # data
 FS_DB = "fs"
+FREQUENCY_FILE = "id_cache.csv"
 
 # data fields
 RECEPT_NO = "rcept_no"
