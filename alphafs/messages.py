@@ -1,6 +1,7 @@
 from alphafs.config import (
     DATA_DIR,
     FS_DB,
+    HISTORY,
     INDICATORS_DIR,
     LATEST_INDICATOR,
     OLD_DATA_DIR,
@@ -29,5 +30,6 @@ INDICATORS_DIR_ERROR_MESSAGE = f"""
 INDICATOR directory structure is not standarized.
 Make the directory structure as following diagram.
 {INDICATORS_DIR}/
-└── {LATEST_INDICATOR}/
+└──  {LATEST_INDICATOR}/
+        └──  {HISTORY}/
 """

@@ -3,6 +3,7 @@ import os
 from alphafs.config import (
     DATA_DIR,
     FS_DB,
+    HISTORY,
     INDICATORS_DIR,
     LATEST_INDICATOR,
     OLD_DATA_DIR,
@@ -31,6 +32,7 @@ def setup_data_dir_structure():
 def setup_indicators_dir_structure():
     os.mkdir(INDICATORS_DIR)
     os.mkdir(f"{INDICATORS_DIR}/{LATEST_INDICATOR}")
+    os.mkdir(f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{HISTORY}")
 
 
 def check_data_dir_structure():
