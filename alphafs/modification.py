@@ -17,6 +17,7 @@ from alphafs.config import (
     TEMP,
 )
 from alphafs.log import main_logger
+from alphafs.messages import NEXT_PROCESS
 from alphafs.string import get_most_similar_words, trim_string
 from alphafs.system import choose_menu, confirm_continuity
 
@@ -132,7 +133,7 @@ def modify_main_issues(string: str, last_modified_index: str, total_count: str):
     main_logger.info(f"{index}th modification issue among {total_count} issues")
     for i in range(int(len(choices) / 2)):
         menus[str(i + 1)] = f"{choices[i * 2]} -> ratio: {choices[i * 2 +1]}%"
-    menus["q"] = "Stop modifying and jump to the next section"
+    menus["q"] = NEXT_PROCESS
 
     response = choose_menu(f"Choose the main name for the account id: {target}", menus)
     if response != "q":
@@ -144,11 +145,58 @@ def modify_main_issues(string: str, last_modified_index: str, total_count: str):
 
 
 def modify_synonym_id_issues(string, last_modified_index, total_count: str):
-    pass
+    splitted_string = string.split("<:>")
+    index = splitted_string[0]
+    sj_div = splitted_string[1]
+    target = splitted_string[2]
+    choice = splitted_string[3]
+    choices = choice.split("<|>")[:-1]
+    menus = {}
+    if int(index) <= int(last_modified_index):
+        return
+    main_logger.info(f"{index}th modification issue among {total_count} issues")
+    for i in range(len(choices)):
+        menus[str(i + 1)] = choices[i]
+    menus["q"] = NEXT_PROCESS
+
+    response = choose_menu(f"Choose the account id for the main name: {target}", menus)
+    if response != "q":
+        new_target = menus[response]
+        del choices[int(response) - 1]
+        synonyms = ""
+        for ch in choices:
+            synonyms += f"{ch}<|>"
+        inputs = f"{index}:{synonyms}-->{new_target}"
+        file_name = f"{sj_div}_{SYNONYM_ID}_{HISTORY}"
+        create_modification_history(file_name, inputs)
+    return response
 
 
 def modify_synonym_nm_issues(string, last_modified_index, total_count: str):
-    pass
+    splitted_string = string.split("<:>")
+    index = splitted_string[0]
+    sj_div = splitted_string[1]
+    target = splitted_string[2]
+    choice = splitted_string[3]
+    choices = choice.split("<|>")[:-1]
+    menus = {}
+    if int(index) <= int(last_modified_index):
+        return
+    main_logger.info(f"{index}th modification issue among {total_count} issues")
+    for i in range(len(choices)):
+        menus[str(i + 1)] = choices[i]
+    menus["q"] = NEXT_PROCESS
+
+    response = choose_menu(
+        f"Choose the account nm for the statement that has no account id: {target}",
+        menus,
+    )
+    if response != "q":
+        new_target = menus[response]
+        inputs = f"{index}:{target}-->{new_target}"
+        file_name = f"{sj_div}_{SYNONYM_NM}_{HISTORY}"
+        create_modification_history(file_name, inputs)
+    return response
 
 
 def synchronize():
