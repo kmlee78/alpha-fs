@@ -24,6 +24,7 @@ CIS = "CIS"
 IS = "IS"
 SCE = "SCE"
 CF = "CF"
+FORMAT = "format"
 
 # account_id
 NULL = "-표준계정코드 미사용-"

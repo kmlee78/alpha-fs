@@ -62,8 +62,8 @@ def main():
         create_synonym_nm_issues(essential_list, indicators, sj_div)
         modify_issues(sj_div, SYNONYM_NM)
 
-    confirm_continuity("Continue update?")
-    synchronize()
+        confirm_continuity(f"Continue updating {sj_div} indicators?")
+        synchronize(sj_div)
 
 
 if __name__ == "__main__":

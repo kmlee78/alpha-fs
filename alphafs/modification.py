@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Dict, List
 
@@ -7,6 +8,8 @@ from alphafs.config import (
     ACCOUNT_ID,
     ACCOUNT_NM,
     COUNTS,
+    ESSENTIAL_LIST,
+    FORMAT,
     FREQUENCY_FILE,
     HISTORY,
     INDICATORS_DIR,
@@ -16,6 +19,7 @@ from alphafs.config import (
     SYNONYM_NM,
     TEMP,
 )
+from alphafs.datareader import IndicatorReader
 from alphafs.log import main_logger
 from alphafs.messages import NEXT_PROCESS
 from alphafs.string import get_most_similar_words, trim_string
@@ -26,6 +30,12 @@ MODIFICATION_TYPE = [MAIN, SYNONYM_ID, SYNONYM_NM]
 
 def get_issue_file(sj_div: str, type: str):
     return f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{HISTORY}/{sj_div}_{type}.txt"
+
+
+def get_history_file(sj_div: str, type: str):
+    return (
+        f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{HISTORY}/{sj_div}_{type}_{HISTORY}.txt"
+    )
 
 
 def load_frequency_file() -> pd.DataFrame:
@@ -101,7 +111,6 @@ def create_synonym_nm_issues(
         save_modification_issue(inputs, sj_div, SYNONYM_NM)
 
 
-# TODO: how to store modified indicators and update
 def create_modification_history(file_name: str, inputs: str):
     history_file = f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{HISTORY}/{file_name}.txt"
     with open(history_file, mode="a") as f:
@@ -138,7 +147,7 @@ def modify_main_issues(string: str, last_modified_index: str, total_count: str):
     response = choose_menu(f"Choose the main name for the account id: {target}", menus)
     if response != "q":
         new_target = menus[response].split(" -> ratio: ")[0]
-        inputs = f"{index}:{target}-->{new_target}"
+        inputs = f"{index}<:>{target}-->{new_target}"
         file_name = f"{sj_div}_{MAIN}_{HISTORY}"
         create_modification_history(file_name, inputs)
     return response
@@ -166,7 +175,7 @@ def modify_synonym_id_issues(string, last_modified_index, total_count: str):
         synonyms = ""
         for ch in choices:
             synonyms += f"{ch}<|>"
-        inputs = f"{index}:{synonyms}-->{new_target}"
+        inputs = f"{index}<:>{synonyms}-->{new_target}"
         file_name = f"{sj_div}_{SYNONYM_ID}_{HISTORY}"
         create_modification_history(file_name, inputs)
     return response
@@ -193,11 +202,67 @@ def modify_synonym_nm_issues(string, last_modified_index, total_count: str):
     )
     if response != "q":
         new_target = menus[response]
-        inputs = f"{index}:{target}-->{new_target}"
+        inputs = f"{index}<:>{target}-->{new_target}"
         file_name = f"{sj_div}_{SYNONYM_NM}_{HISTORY}"
         create_modification_history(file_name, inputs)
     return response
 
 
-def synchronize():
-    pass
+def fetch_formatted_indicators(sj_div: str) -> dict:
+    indicators = IndicatorReader(
+        f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{sj_div}.json"
+    ).read_indicator()
+    del indicators[ESSENTIAL_LIST]
+    for _, value in indicators.items():
+        del value["counts"]
+    return indicators
+
+
+def synchronize_main(indicators_format: dict, sj_div: str):
+    history_file = get_history_file(sj_div, MAIN)
+    with open(history_file, mode="r") as f:
+        for each in f.readlines():
+            string = each.split("<:>")[-1].split("-->")
+            account_id = string[0]
+            main = string[-1][:-1]
+            indicators_format[account_id][MAIN] = main
+    return indicators_format
+
+
+def synchronize_synonym_id(indicators_format: dict, sj_div: str):
+    history_file = get_history_file(sj_div, SYNONYM_ID)
+    with open(history_file, mode="r") as f:
+        for each in f.readlines():
+            string = each.split("<:>")[-1].split("-->")
+            main_synonym_id = string[-1][:-1]
+            sub_synonym_ids = string[0].split("<|>")
+            for id in sub_synonym_ids:
+                if not id:
+                    continue
+                indicators_format[main_synonym_id][SYNONYM_ID].append(id)
+                del indicators_format[id]
+    return indicators_format
+
+
+def synchronize_synonym_nm(indicators_format: dict, sj_div: str):
+    history_file = get_history_file(sj_div, SYNONYM_NM)
+    with open(history_file, mode="r") as f:
+        for each in f.readlines():
+            string = each.split("<:>")[-1].split("-->")
+            main_synonym_nm = string[-1][:-1]
+            sub_synonym_nm = string[0]
+            for _, value in indicators_format.items():
+                if value[MAIN] == main_synonym_nm:
+                    value[SYNONYM_NM].append(sub_synonym_nm)
+    return indicators_format
+
+
+def synchronize(sj_div: str):
+    indicators_format = fetch_formatted_indicators(sj_div)
+    indicators_format = synchronize_main(indicators_format, sj_div)
+    indicators_format = synchronize_synonym_id(indicators_format, sj_div)
+    indicators_format = synchronize_synonym_nm(indicators_format, sj_div)
+    with open(
+        f"{INDICATORS_DIR}/{LATEST_INDICATOR}/{sj_div}_{FORMAT}.json", "w"
+    ) as json_file:
+        json.dump(indicators_format, json_file, ensure_ascii=False)
