@@ -6,8 +6,6 @@ from alphafs.config import (
     HISTORY,
     INDICATORS_DIR,
     LATEST_INDICATOR,
-    OLD_DATA_DIR,
-    OPERATION_DIR,
     TEMP,
 )
 from alphafs.exceptions import FileDoesNotExist
@@ -25,8 +23,7 @@ from alphafs.system import confirm_continuity
 def setup_data_dir_structure():
     os.mkdir(TEMP)
     os.mkdir(DATA_DIR)
-    os.mkdir(f"{DATA_DIR}/{OPERATION_DIR}")
-    os.mkdir(f"{DATA_DIR}/{OLD_DATA_DIR}")
+    os.mkdir(f"{DATA_DIR}/{LATEST_INDICATOR}")
 
 
 def setup_indicators_dir_structure():
@@ -44,7 +41,7 @@ def check_data_dir_structure():
         setup_data_dir_structure()
         main_logger.info(PROCESS_DONE)
 
-    operation_dir_components = os.listdir(f"{DATA_DIR}/{OPERATION_DIR}")
+    operation_dir_components = os.listdir(f"{DATA_DIR}/{LATEST_INDICATOR}")
     if f"{FS_DB}.db" not in operation_dir_components:
         main_logger.warning(f"{DATA_DOES_NOT_EXIST_MESSAGE}: {FS_DB}.db")
         raise FileDoesNotExist("No data file")

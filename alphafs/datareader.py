@@ -9,7 +9,7 @@ from alphafs.config import (
     CORP_CODE,
     DATA_DIR,
     FS_DB,
-    OPERATION_DIR,
+    LATEST_INDICATOR,
     RECEPT_NO,
     SCE,
     SJ_DIV,
@@ -24,7 +24,7 @@ REQUIRED_FIELDS = [
     ACCOUNT_ID,
     ACCOUNT_NM,
 ]
-data_path = f"{DATA_DIR}/{OPERATION_DIR}/{FS_DB}.db"
+data_path = f"{DATA_DIR}/{LATEST_INDICATOR}/{FS_DB}.db"
 engine = sa.create_engine(f"sqlite:///{data_path}")
 
 

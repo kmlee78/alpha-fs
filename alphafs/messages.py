@@ -1,12 +1,4 @@
-from alphafs.config import (
-    DATA_DIR,
-    FS_DB,
-    HISTORY,
-    INDICATORS_DIR,
-    LATEST_INDICATOR,
-    OLD_DATA_DIR,
-    OPERATION_DIR,
-)
+from alphafs.config import DATA_DIR, FS_DB, HISTORY, INDICATORS_DIR, LATEST_INDICATOR
 
 PROCESS_DONE = "Process completed"
 LOADING = "The process will take some time. Please wait..."
@@ -17,9 +9,9 @@ DATA_DIR_ERROR_MESSAGE = f"""
 Data directory structure is not standarized.
 Make the directory struture as following diagram.
 {DATA_DIR}/
-├── {OPERATION_DIR}/
-│       └── {FS_DB}.db
-└── {OLD_DATA_DIR}/"""
+└──  {LATEST_INDICATOR}/
+        └── {FS_DB}.db
+"""
 
 CONFIRM_DIR_PROCESS_MESSAGE = (
     "Would you continue standarizing the directory structure automatically?"
