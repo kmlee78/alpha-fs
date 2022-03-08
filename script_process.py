@@ -24,6 +24,7 @@ from alphafs.modification import (
     modify_synonym_nm_issues,
     synchronize,
 )
+from alphafs.postprocess import reorganize_structure
 from alphafs.system import confirm_continuity
 
 
@@ -64,6 +65,7 @@ def main():
 
         confirm_continuity(f"Continue updating {sj_div} indicators?")
         synchronize(sj_div)
+    reorganize_structure()
 
 
 if __name__ == "__main__":
